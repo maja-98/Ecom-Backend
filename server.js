@@ -5,12 +5,16 @@ const cors = require('cors')
 
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConnection')
-
+const {logger} = require('./middlewares/logger')
+const {errorHandler} = require('./middlewares/errorLog')
 
 const app = express()
 const PORT = process.env.port || 3500
 
 connectDB()
+
+app.use(logger)
+app.use(errorHandler)
 
 app.use(cors(corsOptions))
 app.use(express.static('./public'))
