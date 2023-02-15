@@ -18,6 +18,8 @@ app.use(express.json())
 
 app.use('/',require('./routes/root'))
 app.use('/users',require('./routes/userRoutes'))
+app.use('/items',require('./routes/itemRoutes'))
+
 
 mongoose.connection.once('open',()=>{
     console.log('Connected to MongoDB')

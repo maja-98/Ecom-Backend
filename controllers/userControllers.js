@@ -20,7 +20,7 @@ const createNewUser = asyncHandler (async (req,res) => {
         return res.status(409).json({message:'User name already exists'})
     }
     const hashPwd = await bcrypt.hash(password,10)
-    const userObject = {username,"password":hashPwd,role}
+    const userObject = {username,"password":hashPwd,role:role}
     const user = await User.create(userObject)
     if (user){
         res.status(201).json({message:`New User ${username} created`})
@@ -28,14 +28,9 @@ const createNewUser = asyncHandler (async (req,res) => {
     else{
         res.status(400).json({message:"Invalid user data recieved"})
     }
-    
 })
 const updateUser = asyncHandler (async (req,res) => {
     const {id,username,role,active,password} = req.body
-    if(!id || !username || typeof active !=='boolean' || !role ){
-        console.log(id,username)
-        return res.status(400).json({message:'All fields are required'})
-    }
     const user = await User.findById(id).exec()
     if (!user){
         res.status(400).json({message:"User not Found"})
@@ -44,9 +39,9 @@ const updateUser = asyncHandler (async (req,res) => {
     if(duplicate && duplicate?._id.toString()!==id){
         return res.status(409).json({message:'User name already exists'})
     }
-    user.username = username
-    user.role = role
-    user.active = active
+    user.username = username ?? user.username
+    user.role = role ?? user.role
+    user.active = active ?? user.active
     if (password){
         user.password = await bcrypt.hash(password,10)
     }
@@ -58,7 +53,6 @@ const deleteUser = asyncHandler (async (req,res) => {
     if (!id){
         return res.status(400).json({message:'User Id required'})
     }
-
     const user = await User.findById(id).exec()
     if (!user){
         return res.status(409).json({message:'User not found'})

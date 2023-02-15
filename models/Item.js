@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose)
 const itemSchema = new mongoose.Schema({
     itemid:{
-        type:Number,
-        required: true
+        type:Number
     },
     itemname:{
         type: String,
@@ -19,27 +18,37 @@ const itemSchema = new mongoose.Schema({
     },
     inventory:{
         type:Number,
+        default:2
+    },
+    images:{
+        type: [String],
+        default: ["https://picsum.photos/200/"]
+    },
+    colors:[{
+        type: String
+    }],
+    sizes:[{
+        type: String
+    }],
+    category:{
+        type:String,
         required: true
     },
-    image:{
-        type: String,
-        default: 'https://picsum.photos/200/'
+    brand:{
+        type:String,
+        required: true
     },
-    color:[{
-        type: String,
-        default: null
-    }],
-    size:[{
-        type: String,
-        default: null
-    }],
     active:{
         type: Boolean,
+        default: true
+    },
+    active:{
+        type:Boolean,
         default: true
     }
 })
 itemSchema.plugin(AutoIncrement,{
-    inc_field:'itemid',
+    inc_field:'itemId',
     start_seq :1000
 })
-module.exports = mongoose.model('Item',userSchema)
+module.exports = mongoose.model('Item',itemSchema)
