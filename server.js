@@ -20,9 +20,9 @@ app.use(cors(corsOptions))
 app.use(express.static('./public'))
 app.use(express.json())
 
-app.use('/',require('./routes/root'))
-app.use('/users',require('./routes/userRoutes'))
-app.use('/items',require('./routes/itemRoutes'))
+app.use('/api/',require('./routes/root'))
+app.use('/api/users',require('./routes/userRoutes'))
+app.use('/api/items',require('./routes/itemRoutes'))
 
 
 mongoose.connection.once('open',()=>{
