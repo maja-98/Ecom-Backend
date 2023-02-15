@@ -23,6 +23,8 @@ app.use(express.json())
 app.use('/api/',require('./routes/root'))
 app.use('/api/users',require('./routes/userRoutes'))
 app.use('/api/items',require('./routes/itemRoutes'))
+app.use('/api/carts',require('./routes/cartRoutes'))
+app.use('/api/orders',require('./routes/orderRoutes'))
 
 
 mongoose.connection.once('open',()=>{

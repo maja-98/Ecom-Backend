@@ -11,8 +11,8 @@ const getAllUsers = asyncHandler (async (req,res) => {
     res.json(users)
 })
 const createNewUser = asyncHandler (async (req,res) => {
-    const {username,password,role} = req.body
-    if(!username || !password  ){
+    const {username,role,password,addressLine1,addressLine2,pincode,phone,email} = req.body
+    if(!username || !password || !phone ){
         return res.status(400).json({message:'All fields are required'})
     }
     const duplicate = await User.findOne({username}).lean().exec()
@@ -20,7 +20,7 @@ const createNewUser = asyncHandler (async (req,res) => {
         return res.status(409).json({message:'User name already exists'})
     }
     const hashPwd = await bcrypt.hash(password,10)
-    const userObject = {username,"password":hashPwd,role:role}
+    const userObject = {username,"password":hashPwd,role:role,addressLine1,addressLine2,pincode,phone,email}
     const user = await User.create(userObject)
     if (user){
         res.status(201).json({message:`New User ${username} created`})
@@ -30,7 +30,7 @@ const createNewUser = asyncHandler (async (req,res) => {
     }
 })
 const updateUser = asyncHandler (async (req,res) => {
-    const {id,username,role,active,password} = req.body
+    const {id,username,role,active,password,addressLine1,addressLine2,pincode,phone,email,wallet} = req.body
     const user = await User.findById(id).exec()
     if (!user){
         res.status(400).json({message:"User not Found"})
@@ -42,6 +42,12 @@ const updateUser = asyncHandler (async (req,res) => {
     user.username = username ?? user.username
     user.role = role ?? user.role
     user.active = active ?? user.active
+    user.addressLine1 = addressLine1 ?? user.addressLine1
+    user.addressLine2 = addressLine2 ?? user.addressLine2
+    user.pincode = pincode ?? user.pincode
+    user.phone = phone ?? user.phone
+    user.email = email ?? user.email
+    user.wallet = wallet ?? user.wallet
     if (password){
         user.password = await bcrypt.hash(password,10)
     }
