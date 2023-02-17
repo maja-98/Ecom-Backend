@@ -11,7 +11,8 @@ const getAllUsers = asyncHandler (async (req,res) => {
     res.json(users)
 })
 const createNewUser = asyncHandler (async (req,res) => {
-    const {username,role,password,addressLine1,addressLine2,pincode,phone,email} = req.body
+    let {username,role,password,addressLine1,addressLine2,pincode,phone,email} = req.body
+    username = username.trim()
     if(!username || !password || !phone ){
         return res.status(400).json({message:'All fields are required'})
     }
@@ -30,7 +31,8 @@ const createNewUser = asyncHandler (async (req,res) => {
     }
 })
 const updateUser = asyncHandler (async (req,res) => {
-    const {id,username,role,active,password,addressLine1,addressLine2,pincode,phone,email,wallet} = req.body
+    let {id,username,role,active,password,addressLine1,addressLine2,pincode,phone,email,wallet} = req.body
+    username = username.trim()
     const user = await User.findById(id).exec()
     if (!user){
         res.status(400).json({message:"User not Found"})

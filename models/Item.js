@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose)
 const itemSchema = new mongoose.Schema({
-    itemid:{
-        type:Number
-    },
     itemname:{
         type: String,
         required: true

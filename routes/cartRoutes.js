@@ -5,10 +5,12 @@ const cartController = require('../controllers/cartControllers')
 
 
 router.route('/')
-    .get(cartController.getCartDetails)
+
     .post(cartController.createCartforUser)
     .patch(cartController.updateCartDetails)
     .delete(cartController.deleteCart)
 router.route('/clear')
     .post(cartController.clearCartDetails)
+router.route('/:username')
+    .get(cartController.getCartDetails)
 module.exports = router

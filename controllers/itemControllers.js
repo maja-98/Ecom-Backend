@@ -3,11 +3,13 @@ const asyncHandler = require('express-async-handler')
 
 const getAllItems = asyncHandler(async (req,res) => {
     const items =await Item.find().select().lean()
+    
     if (!items?.length){
         return res.status(400).json({message: 'No Items found'})
     }
     res.json(items)
 })
+
 const getItembyItemId = asyncHandler(async (req,res) => {
     const itemId = isNaN(req.params.itemId)===false ? Number(req.params.itemId) : null
     const items =await Item.findOne({itemId}).lean().exec()
