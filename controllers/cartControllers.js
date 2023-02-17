@@ -10,10 +10,11 @@ const getCartDetails = asyncHandler (async (req,res) => {
     const cart = await Cart.findOne({user:user._id}).lean().exec() ?? []
     const itemIds = cart?.items?.map(item => item.itemId)
     const itemObjects =await  Item.find().where('itemId').in(itemIds).exec() ?? []
-    const b = [1]
-    const changedItemObjects = itemObjects.map((itemObject,i) => {
-        const newItemObject = {...itemObject._doc, cartQuantity: cart.items[i].quantity}
-        console.log(newItemObject)
+    const sortedCartItems = cart.items.sort((a,b) => a.itemId - b.itemId)
+    const sorteditemObjects = itemObjects.sort((a,b) =>a.itemId - b.itemId)
+    console.log(sorteditemObjects)
+    const changedItemObjects = sorteditemObjects.map((itemObject,i) => {
+        const newItemObject = {...itemObject._doc, cartQuantity: sortedCartItems[i].quantity}
         return newItemObject
     })
     cart.itemObjects = changedItemObjects
@@ -46,6 +47,7 @@ const createCartforUser = asyncHandler (async (req,res) => {
 })
 const updateCartDetails = asyncHandler (async (req,res) => {
     const {itemId,discountPrice,deliveryCharge,username,direction} = req.body
+    console.log(itemId)
     if (!username){
         return res.status(400).json({message:'Username is required'})
     }
@@ -58,7 +60,7 @@ const updateCartDetails = asyncHandler (async (req,res) => {
         return res.status(400).json({message:'No existing cart for current User'})
     }
     const item = (itemId)!==undefined ? await Item.findOne({itemId}).lean().exec() : undefined
-
+    console.log(item)
     cart.discountPrice = discountPrice ?? cart.discountPrice
     cart.deliveryCharge = deliveryCharge ?? cart.deliveryCharge
     if (item){
