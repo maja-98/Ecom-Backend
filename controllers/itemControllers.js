@@ -26,6 +26,19 @@ const getItemById = asyncHandler(async (req,res) => {
     }
     res.json(items)
 })
+const getItemByCategory = asyncHandler(async (req,res) => {
+    const items =await Item.find().select().lean()
+    const category = req.params.category
+    console.log(category)
+    if (!category){
+        return res.status(400).json({message: 'No Items found'})
+    }
+    if (!items?.length){
+        return res.status(400).json({message: 'No Items found'})
+    }
+    const itemsByCategory = items.filter(item => item.category===category)
+    res.json(itemsByCategory)
+})
 const createNewItem = asyncHandler (async (req,res) => {
     const {itemname,price,discount,inventory,images,sizes,colors,active,category,brand} = req.body
     if(!itemname || !price || !category || !brand   ){
@@ -83,4 +96,4 @@ const deleteItem = asyncHandler (async (req,res) => {
 })
 
 
-module.exports = {getAllItems,createNewItem,updateItem,deleteItem,getItembyItemId ,getItemById}
+module.exports = {getAllItems,createNewItem,updateItem,deleteItem,getItembyItemId ,getItemById,getItemByCategory}
