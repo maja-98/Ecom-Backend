@@ -18,6 +18,14 @@ const getItembyItemId = asyncHandler(async (req,res) => {
     }
     res.json(items)
 })
+const getItemById = asyncHandler(async (req,res) => {
+    const Id= req.params.Id
+    const items =await Item.findById(Id).lean().exec()
+    if (!items){
+        return res.status(400).json({message: 'No Items found'})
+    }
+    res.json(items)
+})
 const createNewItem = asyncHandler (async (req,res) => {
     const {itemname,price,discount,inventory,images,sizes,colors,active,category,brand} = req.body
     if(!itemname || !price || !category || !brand   ){
@@ -75,4 +83,4 @@ const deleteItem = asyncHandler (async (req,res) => {
 })
 
 
-module.exports = {getAllItems,createNewItem,updateItem,deleteItem,getItembyItemId }
+module.exports = {getAllItems,createNewItem,updateItem,deleteItem,getItembyItemId ,getItemById}

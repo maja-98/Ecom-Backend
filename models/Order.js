@@ -4,9 +4,26 @@ const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const orderSchema = new mongoose.Schema({
     items: [{
-        type: mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:'Item'
+            Id:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'Item'
+        },
+        ordQty:{
+            type: Number,
+            default: 1
+        },
+        itemname:{
+            type: String      
+        },
+        price:{
+            type: Number    
+        },
+        brand:{
+            type: String   
+        },
+        category:{
+            type: String   
+        }
     }],
     user:{
         type: mongoose.Schema.Types.ObjectId,

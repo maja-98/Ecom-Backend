@@ -8,5 +8,7 @@ router.route('/')
     .get(orderController.getOrderDetails)
     .post(orderController.createOrderforUser)
     .patch(orderController.updateOrderDetails)
+router.route('/:userId')
+    .get(orderController.getOrdersforUser)
 
 module.exports = router

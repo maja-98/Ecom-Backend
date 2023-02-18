@@ -5,8 +5,16 @@ const bcrypt = require('bcrypt')
 
 const getAllUsers = asyncHandler (async (req,res) => {
     const users = await User.find().select('-password').lean()
+    
     if (!users?.length){
         return res.status(400).json({message: 'No users found'})
+    }
+    res.json(users)
+})
+const getUserById = asyncHandler (async (req,res) => {
+    const users = await User.findById(req.params.userId)
+    if (!users){
+        return res.status(400).json({message: 'No user found'})
     }
     res.json(users)
 })
@@ -68,4 +76,4 @@ const deleteUser = asyncHandler (async (req,res) => {
     const result = await user.deleteOne()
     res.json(`User ${result.username} Deleted`)
 })
-module.exports = {getAllUsers,createNewUser,updateUser,deleteUser}
+module.exports = {getAllUsers,createNewUser,updateUser,deleteUser,getUserById}
