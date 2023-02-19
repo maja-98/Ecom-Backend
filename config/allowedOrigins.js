@@ -1,6 +1,6 @@
 const allowedOrigins = [
     'http://localhost:3000',
-    'http://dubaipardhapalace.com'
-
+    'https://dubai-pardha-palace.netlify.app/',
+    'http://dubai-pardha-palace.netlify.app/'
 ]
 module.exports = allowedOrigins
