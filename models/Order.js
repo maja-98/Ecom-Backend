@@ -23,6 +23,12 @@ const orderSchema = new mongoose.Schema({
         },
         category:{
             type: String   
+        },
+        orderedSize:{
+            type: String 
+        },
+        orderedColor:{
+            type: String 
         }
     }],
     user:{

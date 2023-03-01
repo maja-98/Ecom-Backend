@@ -13,6 +13,7 @@ const getCartDetails = asyncHandler (async (req,res) => {
     }
     const itemIds = cart?.items?.map(item => item.itemId)
     const itemObjects =await  Item.find().where('itemId').in(itemIds).lean().exec() ?? []
+
     const sortedCartItems = cart.items.sort((a,b) => a.itemId - b.itemId)
     const sorteditemObjects = itemObjects.sort((a,b) =>a.itemId - b.itemId)
     const changedItemObjects = sorteditemObjects.map((itemObject,i) => {
@@ -46,7 +47,7 @@ const createCartforUser = asyncHandler (async (req,res) => {
     }
 })
 const updateCartDetails = asyncHandler (async (req,res) => {
-    const {itemId,discountPrice,deliveryCharge,username,number} = req.body
+    const {itemId,discountPrice,deliveryCharge,username,number,newQuantity} = req.body
     if (!username){
         return res.status(400).json({message:'Username is required'})
     }
@@ -63,21 +64,26 @@ const updateCartDetails = asyncHandler (async (req,res) => {
     cart.deliveryCharge = deliveryCharge ?? cart.deliveryCharge
     if (item){
         const existingItem = cart.items.find(item => item.itemId === itemId)
-        const changedQuantity = Number(number) !== NaN ? Number(number) : -1
-       
+
+        var changedQuantity = Number(number) !== NaN ? Number(number) : -1
+
+        if (existingItem && number ==undefined){
+              changedQuantity = 1
+        }    
+        if (newQuantity && existingItem){
+            changedQuantity = newQuantity-existingItem.quantity
+        }  
         if (changedQuantity<0){
             return res.status(400).json({message:'Invalid new Quanity entered'})
         }
         if (existingItem && changedQuantity >=0){
-            existingItem.quantity = changedQuantity
+            existingItem.quantity += changedQuantity
              
             if (existingItem.quantity > item.inventory){
                 return res.status(400).json({message:'Inventory not available'})
             }
         }
-        else if (existingItem && changedQuantity ==undefined){
-             return res.status(400).json({message:'Number required'})
-        }
+
         else{
             if (item.inventory>0){
                 cart.items.push({itemId})
@@ -90,6 +96,9 @@ const updateCartDetails = asyncHandler (async (req,res) => {
             const newCartItems = cart.items.filter(r => r.itemId!== existingItem.itemId)
             cart.items = newCartItems
         }
+    }
+    else{
+        return res.status(400).json({message: 'No Item Found with this Id'})
     }
     await cart.save()
     res.json({message:`Cart of ${username} updated`})
