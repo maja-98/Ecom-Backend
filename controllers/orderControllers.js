@@ -31,15 +31,15 @@ const getOrdersforUser = asyncHandler (async (req,res) => {
 const createOrderforUser = asyncHandler (async (req,res) => {
     
     const {user,items,deliveryCharge,shippingName,shippingAddress1, 
-        shippingAddress2,shippingPinCode,shippingPhone,shippingEmail} = req.body
+        shippingAddress2,shippingPinCode,shippingPhone,shippingEmail,totalPrice} = req.body
     if (!user || !items?.length  || !shippingName || !shippingAddress1 ||  !shippingPinCode || !shippingPhone || !items?.map(item=>item.ordQty).every(r=>r)  ){
         return res.status(400).json({message:'Mandatory Fields required'})
     }
-    let totalPrice = 0
      let orderItemsTransformed  = []
+    console.log(items)
     for (let i=0;i<items?.length ?? 0;i++){
-        const itemObject = await Item.findById(items[i].Id).lean().exec()
-        totalPrice += (itemObject.price * items[i].ordQty)
+        
+        const itemObject = await Item.findById(items[i].id).lean().exec()
         orderItemsTransformed.push({...itemObject,...items[i]})
         if (itemObject.inventory - items[i].ordQty<0){
             return res.status(400).json({message:"Order not created as inventory not available"})
@@ -54,14 +54,13 @@ const createOrderforUser = asyncHandler (async (req,res) => {
     if (order){
         
         for (let i=0;i<items.length;i++){
-            const itemObject = await Item.findById(items[i].Id).exec()
+            const itemObject = await Item.findById(items[i].id).exec()
             itemObject.inventory -=  items[i].ordQty
             await itemObject.save()
             
         }
 
 
-        console.log(order.items)
         res.status(201).json({message:`New Order created `})
     }
     else{

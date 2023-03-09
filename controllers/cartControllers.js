@@ -67,24 +67,24 @@ const updateCartDetails = asyncHandler (async (req,res) => {
 
         var changedQuantity = Number(number) !== NaN ? Number(number) : -1
 
-        if (existingItem && number ==undefined){
+        if (existingItem && number ==undefined &&newQuantity===undefined){
               changedQuantity = 1
         }    
-        if (newQuantity && existingItem){
+        if (newQuantity!==undefined && existingItem){
             changedQuantity = newQuantity-existingItem.quantity
         }  
-        if (changedQuantity<0){
-            return res.status(400).json({message:'Invalid new Quanity entered'})
-        }
-        if (existingItem && changedQuantity >=0){
+
+        if (existingItem && changedQuantity){
             existingItem.quantity += changedQuantity
-             
+                if (existingItem.quantity<0){
+                    return res.status(400).json({message:'Invalid new Quanity entered'})
+                }             
             if (existingItem.quantity > item.inventory){
                 return res.status(400).json({message:'Inventory not available'})
             }
         }
 
-        else{
+        else if (!existingItem){
             if (item.inventory>0){
                 cart.items.push({itemId})
             }
