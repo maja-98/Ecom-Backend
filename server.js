@@ -7,6 +7,7 @@ const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConnection')
 const {logger} = require('./middlewares/logger')
 const {errorHandler} = require('./middlewares/errorLog')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 const PORT = process.env.port || 3500
@@ -19,12 +20,15 @@ app.use(errorHandler)
 app.use(cors(corsOptions))
 app.use(express.static('./public'))
 app.use(express.json())
+app.use(cookieParser())
 
 app.use('/api/',require('./routes/root'))
 app.use('/api/users',require('./routes/userRoutes'))
 app.use('/api/items',require('./routes/itemRoutes'))
 app.use('/api/carts',require('./routes/cartRoutes'))
 app.use('/api/orders',require('./routes/orderRoutes'))
+app.use('/api/auth',require('./routes/authRoutes'))
+
 
 
 mongoose.connection.once('open',()=>{
