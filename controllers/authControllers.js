@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 
-
 const login = asyncHandler(async (req, res) => {
     const { username, password } = req.body
 
@@ -24,6 +23,7 @@ const login = asyncHandler(async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
+                "userId":foundUser._id,
                 "username": foundUser.username,
                 "role": foundUser.role
             }
@@ -48,7 +48,6 @@ const login = asyncHandler(async (req, res) => {
     res.json({ accessToken })
 })
 
-
 const refresh = (req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
@@ -68,6 +67,7 @@ const refresh = (req, res) => {
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
+                        "userId":foundUser._id,
                         "username": foundUser.username,
                         "role": foundUser.role
                     }
@@ -80,7 +80,6 @@ const refresh = (req, res) => {
         })
     )
 }
-
 
 const logout = (req, res) => {
     const cookies = req.cookies

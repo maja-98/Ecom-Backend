@@ -29,7 +29,7 @@ const getItemById = asyncHandler(async (req,res) => {
 const getItemByCategory = asyncHandler(async (req,res) => {
     const items =await Item.find().select().lean()
     const category = req.params.category
-    console.log(category)
+    
     if (!category){
         return res.status(400).json({message: 'No Items found'})
     }
@@ -94,6 +94,5 @@ const deleteItem = asyncHandler (async (req,res) => {
     const result = await item.deleteOne()
     res.json(`Item ${result.itemname} Deleted`)
 })
-
 
 module.exports = {getAllItems,createNewItem,updateItem,deleteItem,getItembyItemId ,getItemById,getItemByCategory}

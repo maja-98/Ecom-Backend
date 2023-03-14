@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 
 const cartSchema = new mongoose.Schema({
 
-
     items: [{
             itemId:{
             type: mongoose.Schema.Types.Number,

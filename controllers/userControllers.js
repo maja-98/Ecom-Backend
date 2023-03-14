@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
-
+const Cart = require('../models/Cart')
 
 const getAllUsers = asyncHandler (async (req,res) => {
     const users = await User.find().select('-password').lean()
@@ -33,6 +33,8 @@ const createNewUser = asyncHandler (async (req,res) => {
     const user = await User.create(userObject)
     if (user){
         res.status(201).json({message:`New User ${username} created`})
+        const cartObject = {items:[],user:user}
+        const cart = await Cart.create(cartObject)
     }
     else{
         res.status(400).json({message:"Invalid user data recieved"})

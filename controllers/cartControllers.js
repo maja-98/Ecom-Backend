@@ -3,13 +3,14 @@ const Item = require('../models/Item')
 const asyncHandler = require('express-async-handler')
 const Cart = require('../models/Cart')
 
-
 const getCartDetails = asyncHandler (async (req,res) => {
     const {username} = req.params
     const user = await User.findOne({username}).lean().exec()
     const cart = await Cart.findOne({user:user._id}).lean().exec() ?? undefined
     if (!cart){
-        return res.status(400).json({message: 'No Cart found for this User'})
+        const cartObject = {items:[],user:user}
+        const cart = await Cart.create(cartObject)
+        return res.status(400).json({message: 'Refresh Page to create a cart'})
     }
     const itemIds = cart?.items?.map(item => item.itemId)
     const itemObjects =await  Item.find().where('itemId').in(itemIds).lean().exec() ?? []
@@ -25,7 +26,6 @@ const getCartDetails = asyncHandler (async (req,res) => {
     res.json(cart)
 
 })
-
 
 const createCartforUser = asyncHandler (async (req,res) => {
     const {username} = req.body

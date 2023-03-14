@@ -4,7 +4,6 @@ const asyncHandler = require('express-async-handler')
 const Order = require('../models/Order')
 
 
-
 const getOrderDetails = asyncHandler (async (req,res) => {
    
     const orders = await Order.find().lean().exec()
@@ -16,10 +15,15 @@ const getOrderDetails = asyncHandler (async (req,res) => {
 
 })
 const getOrdersforUser = asyncHandler (async (req,res) => {
-   
+    
     const {userId} = req.params
+    const user = await User.findById(userId).lean().exec()
     const orders = await Order.find().lean().exec()
-    const userOrders =  orders.filter(order => order.user == userId)
+    let userOrders = orders
+    if (user.role!=='Admin'){
+        userOrders =  orders.filter(order => order.user == userId)
+    }
+    
     if (!userOrders?.length){
         return res.status(400).json({message:'No orders found for this User'})
     }
@@ -59,7 +63,6 @@ const createOrderforUser = asyncHandler (async (req,res) => {
             await itemObject.save()
             
         }
-
 
         res.status(201).json({message:`New Order created `})
     }
