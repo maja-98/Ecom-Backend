@@ -1,11 +1,14 @@
 const jwt = require('jsonwebtoken')
 
 const verifyJWT = (req,res,next) => {
+    const {userId:paramUserId} = req.params
     const authHeader = req.headers.authorization || req.headers.Authorization
+    const {username:bodyUsername,userId:bodyUserId} = req.body
     if (!authHeader?.startsWith('Bearer ')){
-        return res.status(401).json({message:'Unautorized'})
+        return res.status(401).json({message:'Unauthorized'})
     }
     const token = authHeader.split(' ')[1]
+    
     jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
@@ -14,8 +17,19 @@ const verifyJWT = (req,res,next) => {
             req.username = decoded.UserInfo.username
             req.role = decoded.UserInfo.role
             req.userId = decoded.UserInfo.userId
+            if (req.role==='ADMIN'){
+                next()
+            }
+            else if ((req.method==='GET' && req.baseUrl==='/api/users' && !req.params) ){
+                return res.status(401).json({message:'Unauthorized'})
+            }
+            else if ((req.username===bodyUsername)||(req.userId===bodyUserId)||(req.userId ===paramUserId)){
+                next()
+            }
+            else{
+                return res.status(401).json({message:'Unauthorized'})
+            }
             
-            next()
         }
     )
 }
