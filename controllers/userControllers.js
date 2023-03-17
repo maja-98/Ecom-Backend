@@ -12,7 +12,7 @@ const getAllUsers = asyncHandler (async (req,res) => {
     res.json(users)
 })
 const getUserById = asyncHandler (async (req,res) => {
-    const users = await User.findById(req.params.userId)
+    const users = await User.findById(req.params.userId).select('-password').lean()
     if (!users){
         return res.status(400).json({message: 'No user found'})
     }

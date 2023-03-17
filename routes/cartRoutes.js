@@ -4,8 +4,8 @@ const cartController = require('../controllers/cartControllers')
 const verifyJWT = require('../middlewares/verifyJWT')
 
 
-router.route([verifyJWT],'/:username')
-    .get(cartController.getCartDetails)
+router.route('/:username')
+    .get([verifyJWT],cartController.getCartDetails)
 router.use(verifyJWT)
 
 router.route('/')

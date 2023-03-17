@@ -3,7 +3,7 @@ const Item = require('../models/Item')
 const asyncHandler = require('express-async-handler')
 const Cart = require('../models/Cart')
 
-const getCartDetails = asyncHandler (async (req,res) => {
+const getCartDetails = asyncHandler (async (req,res) => { 
     const {username} = req.params
     const user = await User.findOne({username}).lean().exec()
     const cart = await Cart.findOne({user:user._id}).lean().exec() ?? undefined
