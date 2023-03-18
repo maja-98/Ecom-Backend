@@ -2,7 +2,7 @@
   "name": "dubai-backend",
   "version": "1.0.0",
   "description": "Dubai Pardha Palace Backened Site",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server",
     "dev": "nodemon server"

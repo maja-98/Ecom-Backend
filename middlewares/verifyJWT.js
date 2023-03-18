@@ -16,7 +16,7 @@ const verifyJWT = (req,res,next) => {
             req.username = decoded.UserInfo.username
             req.role = decoded.UserInfo.role
             req.userId = decoded.UserInfo.userId
-            if (req.role==='ADMIN'){
+            if (req.role==='Admin'){
                 next()
             }
             else if ((req.method==='GET' && req.baseUrl==='/api/users' && !req.params) ){
