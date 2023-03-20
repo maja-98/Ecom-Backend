@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const verifyJWT = (req,res,next) => {
     const {userId:paramUserId,username:paramsUserName} = req.params
     const authHeader = req.headers.authorization || req.headers.Authorization
-    const {username:bodyUsername,userId:bodyUserId} = req.body
+    const {username:bodyUsername,userId:bodyUserId,user:bodyAnotherUserId} = req.body
     if (!authHeader?.startsWith('Bearer ')){
         return res.status(401).json({message:'Unauthorized'})
     }
@@ -22,7 +22,7 @@ const verifyJWT = (req,res,next) => {
             else if ((req.method==='GET' && req.baseUrl==='/api/users' && !req.params) ){
                 return res.status(401).json({message:'Unauthorized'})
             }
-            else if ((req.username===bodyUsername)||(req.userId===bodyUserId)||(req.userId ===paramUserId)||req.username===paramsUserName){
+            else if ((req.username===bodyUsername)||(req.userId===bodyUserId)||(req.userId===bodyAnotherUserId)||(req.userId ===paramUserId)||req.username===paramsUserName){
                 next()
             }
             else{
